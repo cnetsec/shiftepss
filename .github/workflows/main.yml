@@ -4,12 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       data_inicial:
-        description: "Data inicial (YYYY-MM-DD)"
+        description: "Data inicial (formato YYYY-MM-DD)"
         required: true
+        default: "2024-03-01"
         type: string
       data_final:
-        description: "Data final (YYYY-MM-DD)"
+        description: "Data final (formato YYYY-MM-DD)"
         required: true
+        default: "2025-07-01"
         type: string
       quantidade:
         description: "Quantidade de CVEs a exibir"
@@ -34,6 +36,19 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pandas requests
+
+      - name: 🔍 Validar formato das datas
+        run: |
+          echo "Validando datas..."
+          if ! [[ "${{ inputs.data_inicial }}" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+            echo "❌ Erro: Data inicial inválida (${ inputs.data_inicial }). Use o formato YYYY-MM-DD."
+            exit 1
+          fi
+          if ! [[ "${{ inputs.data_final }}" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+            echo "❌ Erro: Data final inválida (${ inputs.data_final }). Use o formato YYYY-MM-DD."
+            exit 1
+          fi
+          echo "✅ Datas válidas."
 
       - name: ▶️ Executar análise EPSS
         run: |
