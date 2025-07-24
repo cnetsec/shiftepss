@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       data_inicial:
-        description: "Data inicial (formato YYYY-MM-DD)"
+        description: "Data inicial (YYYY-MM-DD)"
         required: true
         type: string
       data_final:
-        description: "Data final (formato YYYY-MM-DD)"
+        description: "Data final (YYYY-MM-DD)"
         required: true
         type: string
       quantidade:
@@ -38,8 +38,4 @@ jobs:
       - name: ▶️ Executar análise EPSS
         run: |
           echo "Executando shiftepss.py..."
-          python shiftepss.py <<EOF
-          ${{ inputs.data_inicial }}
-          ${{ inputs.data_final }}
-          ${{ inputs.quantidade }}
-          EOF
+          printf "%s\n%s\n%s\n" "${{ inputs.data_inicial }}" "${{ inputs.data_final }}" "${{ inputs.quantidade }}" | python shiftepss.py
