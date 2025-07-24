@@ -1,0 +1,45 @@
+name: EPSS Shift Analyzer
+
+on:
+  workflow_dispatch:
+    inputs:
+      data_inicial:
+        description: "Data inicial (formato YYYY-MM-DD)"
+        required: true
+        type: string
+      data_final:
+        description: "Data final (formato YYYY-MM-DD)"
+        required: true
+        type: string
+      quantidade:
+        description: "Quantidade de CVEs a exibir"
+        required: true
+        default: "10"
+        type: string
+
+jobs:
+  run-shiftepss:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔄 Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: 🐍 Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 📦 Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas requests
+
+      - name: ▶️ Executar análise EPSS
+        run: |
+          echo "Executando shiftepss.py..."
+          python shiftepss.py <<EOF
+          ${{ inputs.data_inicial }}
+          ${{ inputs.data_final }}
+          ${{ inputs.quantidade }}
+          EOF
